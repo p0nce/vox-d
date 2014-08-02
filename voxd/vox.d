@@ -35,8 +35,8 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
 
     uint mainId;
     uint mainSize;
-    getRIFFChunkHeader(R)(input, mainId, mainSize);
-    if (mainId != RIFFChunkId!"MAIN");
+    getRIFFChunkHeader(input, mainId, mainSize);
+    if (mainId != RIFFChunkId!"MAIN")
         throw new VoxdException("Expected MAIN chunk");
 
     long mainChildrenSize = popLE!uint(input);
@@ -44,33 +44,82 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
     // skip main
     skipBytes(input, cast(int)mainSize);
 
-    VOX result;
+    // initialize palette
+    alias palette_t = MV_RGBA[256];
+    palette_t palette;
+    for (int i = 0; i < 256; ++i)
+        palette[i] = MV_RGBA(defaultPalette[i]);
+
+
+    // default palette
+    ubyte[] indices;
+    bool foundSizeChunk = false;
+    int width;
+    int height;
+    int depth;
 
     while (mainChildrenSize > 0)
     {
         uint chunkId, chunkSize, childrenSize;
-        getRIFFChunkHeader(chunkId, chunkSize);
+        getRIFFChunkHeader(input, chunkId, chunkSize);
         childrenSize = popLE!uint(input);
 
         if (chunkId == RIFFChunkId!"SIZE")
         {
-            result.width = popLE!int(input);
-            result.height = popLE!int(input);
-            result.depth = popLE!int(input);
-        }
+            width = popLE!int(input);
+            height = popLE!int(input);
+            depth = popLE!int(input);
 
+            indices.length = (width * height * depth);
+            indices[] = 0;
+            foundSizeChunk = true;
+        }
         else if (chunkId == RIFFChunkId!"XYZI")
         {
+            if (!foundSizeChunk)
+                throw new VoxdException("Expected SIZE chunk before XYZI chunk");
 
+            uint numVoxels = popLE!uint(input);
+
+            if (chunkSize != 4 + numVoxels * 4)
+                throw new VoxdException("Incorrect XYZI chunk size");
+
+            for (uint i = 0; i < numVoxels; ++i)
+            {
+                int x = popUbyte(input);
+                int y = popUbyte(input);
+                int z = popUbyte(input);
+                ubyte c = popUbyte(input);
+                indices[x + y * width + z *width * height] = c;
+            }
         }
         else if (chunkId == RIFFChunkId!"RGBA")
         {
+            if (chunkSize != 256 * 4)
+                throw new VoxdException("Incorrect RGBA chunk size");
 
-
+            for (int i = 0; i < 256; ++i)
+                palette[i] = MV_RGBA(popLE!uint(input));
         }
 
-        skipBytes(intput, childrenSize);
+        // skip children size
+        skipBytes(input, childrenSize);
+
         mainChildrenSize -= (chunkSize + childrenSize + 8);
+    }
+
+    if (!foundSizeChunk)
+        throw new VoxdException("Expected SIZE chunk");
+
+    VOX result;
+
+    result.width = width;
+    result.height = height;
+    result.depth = depth;
+
+    for (int i = 0; i < width * height * depth; ++i)
+    {
+        result.voxels[i] = palette[indices[i]];
     }
     
     return result;
@@ -79,17 +128,14 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
 private
 {
 
-    struct MV_RGBA 
-    {
-        ubyte r, g, b, a;
-    }
+
 
     struct MV_Voxel 
     {
         ubyte x, y, z, colorIndex;
     }
 
-    static immutable uint default_palette [ 256 ] = 
+    static immutable uint[256] defaultPalette = 
     [
         0x00000000, 0xffffffff, 0xffccffff, 0xff99ffff, 0xff66ffff, 0xff33ffff, 0xff00ffff, 0xffffccff, 0xffccccff, 0xff99ccff, 0xff66ccff, 0xff33ccff, 0xff00ccff, 0xffff99ff, 0xffcc99ff, 0xff9999ff,
         0xff6699ff, 0xff3399ff, 0xff0099ff, 0xffff66ff, 0xffcc66ff, 0xff9966ff, 0xff6666ff, 0xff3366ff, 0xff0066ff, 0xffff33ff, 0xffcc33ff, 0xff9933ff, 0xff6633ff, 0xff3333ff, 0xff0033ff, 0xffff00ff,

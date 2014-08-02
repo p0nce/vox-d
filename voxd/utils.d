@@ -6,6 +6,19 @@ import std.file,
        std.string,
        std.format;
 
+struct MV_RGBA 
+{
+    ubyte r, g, b, a;
+
+    this(uint value)
+    {
+        a = (value >> 24);
+        b = (value >> 16) & 255;
+        g = (value >> 8) & 255;
+        r = value & 255;
+    }
+}
+
 
 /// The simple structure currently used in vox-d. Expect changes about this.
 struct VOX
@@ -14,6 +27,13 @@ public:
     int width;
     int height;
     int depth;
+
+    MV_RGBA[] voxels;
+
+    ref inout(MV_RGBA) voxel(int x, int y, int z) inout
+    {
+        return voxels[x + y * width + z * width * height];
+    }
 
     int numVoxels() pure const nothrow
     {
