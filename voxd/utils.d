@@ -10,7 +10,15 @@ import std.file,
 /// The simple structure currently used in vox-d. Expect changes about this.
 struct VOX
 {
-    // TODO
+public:
+    int width;
+    int height;
+    int depth;
+
+    int numVoxels() pure const nothrow
+    {
+        return width * height * depth;
+    }
 }
 
 /// The one type of Exception thrown in this library
@@ -38,7 +46,7 @@ private template IntegerLargerThan(int numBytes) if (numBytes >= 1 && numBytes <
 ubyte popUbyte(R)(ref R input) if (isInputRange!R)
 {
     if (input.empty)
-        throw new WavedException("Expected a byte, but end-of-input found.");
+        throw new VoxdException("Expected a byte, but end-of-input found.");
 
     ubyte b = input.front;
     input.popFront();
