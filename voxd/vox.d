@@ -105,7 +105,7 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
         // skip children size
         skipBytes(input, childrenSize);
 
-        mainChildrenSize -= (chunkSize + childrenSize + 8);
+        mainChildrenSize -= (chunkSize + childrenSize + 12);
     }
 
     if (!foundSizeChunk)
@@ -116,6 +116,7 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
     result.width = width;
     result.height = height;
     result.depth = depth;
+    result.voxels.length = width * height * depth;
 
     for (int i = 0; i < width * height * depth; ++i)
     {
