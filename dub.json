@@ -1,0 +1,15 @@
+{
+    "name": "vox-d",
+    "description": "VOX file loader.",
+    "homepage": "http://github.com/p0nce/vox-d/",
+    "license": "public domain",
+
+    "targetType": "library",
+
+    "authors": [
+        "ponce"
+    ],
+
+    "sourcePaths": [ "." ],
+    "importPaths": [ "." ]
+}
