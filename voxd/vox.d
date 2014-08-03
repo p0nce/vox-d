@@ -52,7 +52,7 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
 
 
     // default palette
-    ubyte[] indices;
+    int[] indices;
     bool foundSizeChunk = false;
     int width;
     int height;
@@ -71,7 +71,7 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
             depth = popLE!int(input);
 
             indices.length = (width * height * depth);
-            indices[] = 0;
+            indices[] = -1;
             foundSizeChunk = true;
         }
         else if (chunkId == RIFFChunkId!"XYZI")
@@ -90,7 +90,10 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
                 int y = popUbyte(input);
                 int z = popUbyte(input);
                 ubyte c = popUbyte(input);
-                indices[x + y * width + z *width * height] = c;
+                if (c == 0)
+                    throw new VoxdException("Color 0 encountered");
+
+                indices[x + y * width + z *width * height] = c - 1;
             }
         }
         else if (chunkId == RIFFChunkId!"RGBA")
@@ -120,7 +123,10 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
 
     for (int i = 0; i < width * height * depth; ++i)
     {
-        result.voxels[i] = palette[indices[i]];
+        if (indices[i] == -1)
+            result.voxels[i] = VoxColor(0);
+        else 
+            result.voxels[i] = palette[indices[i]];
     }
     
     return result;
