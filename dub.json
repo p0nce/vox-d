@@ -1,6 +1,6 @@
 {
     "name": "vox-d",
-    "description": "VOX file loader.",
+    "description": "vox-d is a library to load VOX voxel files (used by eg. MagicaVoxel).",
     "homepage": "http://github.com/p0nce/vox-d/",
     "license": "public domain",
 

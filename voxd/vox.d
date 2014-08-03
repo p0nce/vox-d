@@ -45,10 +45,10 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
     skipBytes(input, cast(int)mainSize);
 
     // initialize palette
-    alias palette_t = MV_RGBA[256];
+    alias palette_t = VoxColor[256];
     palette_t palette;
     for (int i = 0; i < 256; ++i)
-        palette[i] = MV_RGBA(defaultPalette[i]);
+        palette[i] = VoxColor(defaultPalette[i]);
 
 
     // default palette
@@ -99,7 +99,7 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
                 throw new VoxdException("Incorrect RGBA chunk size");
 
             for (int i = 0; i < 256; ++i)
-                palette[i] = MV_RGBA(popLE!uint(input));
+                palette[i] = VoxColor(popLE!uint(input));
         }
 
         // skip children size

@@ -6,7 +6,7 @@ import std.file,
        std.string,
        std.format;
 
-struct MV_RGBA 
+struct VoxColor
 {
     ubyte r, g, b, a;
 
@@ -28,9 +28,9 @@ public:
     int height;
     int depth;
 
-    MV_RGBA[] voxels;
+    VoxColor[] voxels;
 
-    ref inout(MV_RGBA) voxel(int x, int y, int z) inout
+    ref inout(VoxColor) voxel(int x, int y, int z) inout
     {
         return voxels[x + y * width + z * width * height];
     }
