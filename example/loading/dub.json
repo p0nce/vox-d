@@ -1,0 +1,11 @@
+{
+    "targetType": "executable",
+    "name": "loading",
+    "sourcePaths": [ "." ],
+    "importPaths": [ "." ],
+
+    "dependencies":
+    {
+        "vox-d": {"path": "../../"}
+    }
+}

@@ -7,7 +7,7 @@ import std.range,
 
 import voxd.utils;
 
-/// Supports VOX format
+/// Supports the VOX format used by MagicaVoxel
 
 /// Decodes a VOX file.
 /// Throws: VoxdException on error.
@@ -23,7 +23,7 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
 {
     // check header
     {
-        uint magic = popBE!uint(input);        
+        uint magic = popBE!uint(input);
         if (magic != RIFFChunkId!"VOX ")
             throw new VoxdException("Expected 'VOX ' chunk.");
 
@@ -31,7 +31,7 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
         uint fileVersion = popLE!uint(input);
         if (fileVersion > maxSupportedVersion)
             throw new VoxdException(format("Unsupported version %s, maximum supported is %s", fileVersion, maxSupportedVersion));
-    } 
+    }
 
     uint mainId;
     uint mainSize;
@@ -125,10 +125,10 @@ VOX decodeVOX(R)(R input) if (isInputRange!R)
     {
         if (indices[i] == -1)
             result.voxels[i] = VoxColor(0);
-        else 
+        else
             result.voxels[i] = palette[indices[i]];
     }
-    
+
     return result;
 }
 
@@ -137,12 +137,12 @@ private
 
 
 
-    struct MV_Voxel 
+    struct MV_Voxel
     {
         ubyte x, y, z, colorIndex;
     }
 
-    static immutable uint[256] defaultPalette = 
+    static immutable uint[256] defaultPalette =
     [
         0x00000000, 0xffffffff, 0xffccffff, 0xff99ffff, 0xff66ffff, 0xff33ffff, 0xff00ffff, 0xffffccff, 0xffccccff, 0xff99ccff, 0xff66ccff, 0xff33ccff, 0xff00ccff, 0xffff99ff, 0xffcc99ff, 0xff9999ff,
         0xff6699ff, 0xff3399ff, 0xff0099ff, 0xffff66ff, 0xffcc66ff, 0xff9966ff, 0xff6666ff, 0xff3366ff, 0xff0066ff, 0xffff33ff, 0xffcc33ff, 0xff9933ff, 0xff6633ff, 0xff3333ff, 0xff0033ff, 0xffff00ff,
