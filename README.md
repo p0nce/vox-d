@@ -1,6 +1,9 @@
 ## What's this?
 
-vox-d is a library to load VOX voxel files (used by eg. MagicaVoxel).
+vox-d is a library to load several format of voxel bitmap files.
+- .VOX: Format used by MagicaVoxel, supports alpha
+- .VOX: Simple uncompressed grid of 8-bit values
+
 
 
 ## Licenses
