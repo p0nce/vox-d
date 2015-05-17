@@ -12,11 +12,4 @@ void main(string[] args)
 
     VoxColor color = treeModel.voxel(0, 1, 2);
     writefln("voxel (0, 1, 2) has color (r = %s, g = %s, b = %s, a = %s)", color.r, color.g, color.b, color.a);
-
-    VOX flagModel = decodeKVX("FlagBlue.kvx");
-
-    writefln("width = %s", flagModel.width);
-    writefln("height = %s", flagModel.height);
-    writefln("depth = %s", flagModel.depth);
-    writefln("That makes %s voxels total", flagModel.numVoxels());
 }

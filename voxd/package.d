@@ -15,11 +15,5 @@ VOX decodeAny(string filepath)
     {
     }
 
-    try
-    {
-        return decodeRawVOX(filepath);
-    }
-    catch(Exception e)
-    {
-    }
+    return decodeRawVOX(filepath);
 }
