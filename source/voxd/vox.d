@@ -11,15 +11,15 @@ import voxd.utils;
 
 /// Decodes a VOX file.
 /// Throws: VoxdException on error.
-VOX decodeVOX(string filepath)
+VOX decodeMagicaVOXFromFile(string filepath)
 {
     auto bytes = cast(ubyte[]) std.file.read(filepath);
-    return decodeVOX(bytes);
+    return decodeMagicaVOXFromMemory(bytes);
 }
 
 /// Decodes a VOX.
 /// Throws: VoxdException on error.
-VOX decodeVOX(R)(R input) if (isInputRange!R)
+VOX decodeMagicaVOXFromMemory(ubyte[] input)
 {
     // check header
     {

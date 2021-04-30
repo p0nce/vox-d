@@ -12,15 +12,15 @@ import voxd.utils;
 
 /// Decodes a VOX file.
 /// Throws: VoxdException on error.
-VOX decodeRawVOX(string filepath)
+VOX decodeRawVOXFromFile(string filepath)
 {
     auto bytes = cast(ubyte[]) std.file.read(filepath);
-    return decodeRawVOX(bytes);
+    return decodeRawVOXFromMemory(bytes);
 }
 
 /// Decodes a VOX.
 /// Throws: VoxdException on error.
-VOX decodeRawVOX(R)(R input) if (isInputRange!R)
+VOX decodeRawVOXFromMemory(ubyte[] input)
 {
 
     // check header

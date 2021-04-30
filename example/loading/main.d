@@ -3,7 +3,7 @@ import voxd;
 
 void main(string[] args)
 {
-    VOX treeModel = decodeRawVOX("tree2.vox");
+    VOX treeModel = decodeVOXFromFile("tree2.vox");
 
     writefln("width = %s", treeModel.width);
     writefln("height = %s", treeModel.height);
