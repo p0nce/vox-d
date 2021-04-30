@@ -21,7 +21,7 @@ import voxd;
 
 void main()
 {
-    VOX model = decodeVOX("dragon.vox");
+    VOX model = decodeVOXFromFile("dragon.vox"); // alternatively: decodeVOXFromMemory(ubyte[] data)
 
     writefln("width = %s", model.width);
     writefln("height = %s", model.height);
